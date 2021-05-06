@@ -29,7 +29,7 @@ from sklearn.metrics import roc_auc_score
 
 class CreditScorer:
     def __init__(self):
-        self.X, self.y = self.load_data("cs-training.csv")
+        self.X, self.y = self.load_data("./data/cs-training.csv")
         self.classifier = None
 
     def load_data(self, path, train=True):
@@ -60,9 +60,9 @@ class CreditScorer:
             # RandomForestClassifier(),
             # AdaBoostClassifier(),
             # GradientBoostingClassifier(),
-            XGBClassifier(),
+            # XGBClassifier(),
             # ExtraTreesClassifier(),
-            # LGBMClassifier(),
+            LGBMClassifier(),
         ]
 
         lst = []
@@ -71,8 +71,7 @@ class CreditScorer:
 
         for clf in tqdm(classifiers):
             clf.fit(self.X, self.y)
-            auc = cross_val_score(clf, self.X, self.y,
-                                  cv=5, scoring="roc_auc").mean()
+            auc = cross_val_score(clf, self.X, self.y, cv=5, scoring="roc_auc").mean()
             if auc > best_auc:
                 best_auc = auc
                 best_clf = clf
@@ -84,20 +83,21 @@ class CreditScorer:
         print(results)
 
         self.classifier = best_clf
-    
+
     def save_model(self, path):
         pickle.dump(self.classifier, open(path, "wb"))
 
     def train_classifier(self, path, classifier):
-        """ Train a specific classifier
+        """Train a specific classifier
 
         Args:
             path (string): path of where to save the model
         """
         self.classifier = classifier
         self.classifier.fit(self.X, self.y)
-        auc = cross_val_score(self.classifier, self.X, self.y, cv=5,
-                              scoring="roc_auc").mean()
+        auc = cross_val_score(
+            self.classifier, self.X, self.y, cv=5, scoring="roc_auc"
+        ).mean()
         print("AUC is: {0:.04f}".format(auc))
         self.save_model(path)
 
@@ -153,11 +153,11 @@ class CreditScorer:
 
     def load_model(self, path):
         self.classifer = pickle.load(open(path, "rb"))
-    
+
     def plot_feature_importance(self):
-        df = pd.read_csv('cs-training.csv')
-        columns = df.drop(['SeriousDlqin2yrs','Unnamed: 0'],axis=1).columns
-        plt.barh(columns,self.classifier.feature_importances_)
+        df = pd.read_csv("./data/cs-training.csv")
+        columns = df.drop(["SeriousDlqin2yrs", "Unnamed: 0"], axis=1).columns
+        plt.barh(columns, self.classifier.feature_importances_)
         plt.show()
 
     def submit_kaggle(self, path):
@@ -166,7 +166,7 @@ class CreditScorer:
         Args:
             path (string): path and filename describing where the file will be saved in
         """
-        X_test, id = self.load_data("cs-test.csv", train=False)
+        X_test, id = self.load_data("./data/cs-test.csv", train=False)
         predictions = self.classifier.predict_proba(X_test)[:, 1]
         submission = pd.DataFrame(
             list(zip(id, predictions)), columns=["Id", "Probability"]
