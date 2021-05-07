@@ -27,7 +27,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import roc_auc_score
 
 
-class CreditScorer:
+class ELCreditScorer:
     def __init__(self):
         self.X, self.y = self.load_data("./data/cs-training.csv")
         self.classifier = None
@@ -54,7 +54,7 @@ class CreditScorer:
         """ Evaluation of 9 classifiers """
 
         classifiers = [
-            SVC(),
+            # SVC(),
             LogisticRegression(),
             DecisionTreeClassifier(),
             RandomForestClassifier(),
@@ -71,7 +71,8 @@ class CreditScorer:
 
         for clf in tqdm(classifiers):
             clf.fit(self.X, self.y)
-            auc = cross_val_score(clf, self.X, self.y, cv=5, scoring="roc_auc").mean()
+            auc = cross_val_score(clf, self.X, self.y,
+                                  cv=5, scoring="roc_auc").mean()
             if auc > best_auc:
                 best_auc = auc
                 best_clf = clf
@@ -83,6 +84,8 @@ class CreditScorer:
         print(results)
 
         self.classifier = best_clf
+
+        print("Evaluation is done.")
 
     def save_model(self, path):
         pickle.dump(self.classifier, open(path, "wb"))
@@ -124,6 +127,8 @@ class CreditScorer:
             n_jobs=-1,
         )
         random_lgb.fit(self.X, self.y)
+
+        print("Hyperparameter tuning done.")
         print("Best parameters are: {}".format(random_lgb.best_params_))
         print("Best score is: {0:.4f}".format(random_lgb.best_score_))
 
@@ -144,6 +149,8 @@ class CreditScorer:
         )
 
         grid_lgb.fit(self.X, self.y)
+
+        print("Finetuning done.")
         print("Best parameters are: {}".format(grid_lgb.best_params_))
         print("Best score is: {0:.4f}".format(grid_lgb.best_score_))
 
