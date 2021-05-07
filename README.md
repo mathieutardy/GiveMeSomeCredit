@@ -14,14 +14,18 @@ AUC stands for Area under the Curve. The curve in question is the ROC curve. The
 
 The advantage of the AUC - ROC curve is that it evaluates the model for each probability threshold that the model outputs.
 
-An alternative evaluation metric could have been to plot a precision and recall curve based on the F1-score. Usually, this metric is better suited for unbalanced datasets in terms of their dependent variable y.
+An alternative evaluation metric could have been to plot a precision and recall curve based on the F1-score. Usually, this metric is better suited for unbalanced datasets. In other words, datasets for which y has a majority class. It is the case for this exercise has SeriousDlqin2yrs = 1 represents only 6.7% of all classes.
 
 3.  What insight(s) do you have from your model? What is your preliminary analysis of the given dataset?
 
-It is hard to extract intuition from our model and this dataset. The most performing models are gradient boosting trees which perform 60% better than neural networks. These ensemble classifiers aggregate weak learners sequentially. Each new tree is added to minimise the overall loss. These models usually work better when there is no clear causal relationship between the dependent and independent variables. This is validated by the correlation matrix that I computed. There is no clear positive and negative correlation between y and X. Moreover, I plotted each variable by the dependent variable (SeriousDlqin2yrs). We do not notice any clear linear separation between the dependent variables and y.
+It is hard to build intuition from our model for this dataset. The most performing models are gradient boosting trees which perform 60% better than neural networks. These ensemble classifiers aggregate weak learners sequentially. Each new tree is added to minimise the overall loss. These models usually work better when there is no clear causal relationship between the dependent and independent variables. 
 
-Secondly, looking at the feature importance scores of different classifiers, each boosted tree use radically different variables to separate the dataset. For example,  NumberOfTimes90DaysLate, NumberOfTime30-59DaysPastDueNotWorse and NumberOfTime60-89DaysPastDueNotWorse represent over 50% of the feature contribution for each tree of LightGBM. On the other hand, for XGBoost, the split is more equally distributed over all variables. For the latter model, Depthratio, age and MonthlyIncome are the most important features. This diversity of important variables in building trees depending on the algorithm used shows that the features available are not good predictors of y.
+Preliminary analysis of the dataset show that this is the case. Indeed, looking at the correlation matrix between the all features, there are no clear positive or negative correlations between y and X. Moreover, I plotted each variable where SeriousDlqin2yrs = 1 and SeriousDlqin2yrs = 0. We do not notice any clear linear separation between the dependent variables and the class of y.
+
+Secondly, looking at the feature importance scores of different classifiers, each boosted tree use radically different variables to separate the dataset. For example,  NumberOfTimes90DaysLate, NumberOfTime30-59DaysPastDueNotWorse and NumberOfTime60-89DaysPastDueNotWorse represent over 50% of the feature contribution for each tree of LightGBM. On the other hand, for XGBoost, the split is more equally distributed over all variables. For the latter model, Depthratio, age and MonthlyIncome are the most important features. This diversity of important variables of each tree building processes show that the features available are not good predictors of y.
+
+The next step would be to improve our feature engineering to build better linear seperators for our dependent variable y.
 
 4. Can you get into the top 100 of the private leaderboard, or even higher?
 
-No. I have an average AUC of 0.864708 on the training cross-validation. My best submission on the Kaggle challenge had a performance of 0.86050 (Public Score) and 0.86671 (Private Score). The difference between the training and testing performance. The model generalises quite well.
+No. I have an average AUC of 0.864708 on the training cross-validation. My best submission on the Kaggle challenge had a performance of 0.86050 (Public Score) and 0.86671 (Private Score). There is a small difference between the training and testing performances. Thus, the model generalises quite well.

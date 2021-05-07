@@ -54,14 +54,14 @@ class CreditScorer:
         """ Evaluation of 9 classifiers """
 
         classifiers = [
-            # SVC(),
-            # LogisticRegression(),
-            # DecisionTreeClassifier(),
-            # RandomForestClassifier(),
-            # AdaBoostClassifier(),
-            # GradientBoostingClassifier(),
-            # XGBClassifier(),
-            # ExtraTreesClassifier(),
+            SVC(),
+            LogisticRegression(),
+            DecisionTreeClassifier(),
+            RandomForestClassifier(),
+            AdaBoostClassifier(),
+            GradientBoostingClassifier(),
+            XGBClassifier(),
+            ExtraTreesClassifier(),
             LGBMClassifier(),
         ]
 
